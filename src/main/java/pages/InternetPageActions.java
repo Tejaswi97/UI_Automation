@@ -1,35 +1,32 @@
-package com.qa.pages;
-
+package pages;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Ignore;
-import org.testng.annotations.Test;
+import org.openqa.selenium.WebDriver;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-
 import java.time.*;
+import java.nio.file.Path;
 import java.util.List;
 
-import javax.swing.Action;
+public class InternetPageActions {
 
-public class TheInternet {
+    private final WebDriver driver;
+    private final WebDriverWait wait;
 
-    WebDriver driver = new ChromeDriver();
-    WebDriverWait wait;
-    String URL = "https://the-internet.herokuapp.com/";
+    public InternetPageActions(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+    
     String TitleName = "The Internet";
     String link_abtest = "//a[@href=\"/abtest\"]";
-    String text_abtest = "//*[@id='content']/div/h3";
+    String text_abtest = "//*[@id='content']//h3";
     String link_addRemove = "//a[@href=\"/add_remove_elements/\"]";
     String link_checkBoxes = "//a[@href=\"/checkboxes\"]";
     String link_contextMenu = "//a[@href=\"/context_menu\"]";
@@ -68,18 +65,8 @@ public class TheInternet {
     String btn_delete = "//button[@class=\"added-manually\"]";
     String btn_addElement = "//button[@onclick=\"addElement()\"]";
 
-    @BeforeTest
-    public void setUp(){
-        driver.navigate().to(URL);
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(2));
-    }
 
-    //01
-    @Test
-    @Ignore
-    public void splitTest(){
-        // Fetch Page Title and compare using Assertion
+    public void splitTestCompareAssertion(){
         String title = driver.getTitle();
         System.out.println("Page title is "+title);
         assertEquals(TitleName,title);
@@ -88,9 +75,6 @@ public class TheInternet {
         System.out.println(text);
     }
 
-    //02
-    @Test
-    @Ignore
     public void addRemoveElements(){
         driver.findElement(By.xpath(link_addRemove)).click();
         // Verify delete button is not displayed by default
@@ -111,9 +95,6 @@ public class TheInternet {
         }
     }
 
-    //03
-    @Test
-    @Ignore
     public void verifyCheckboxes(){
         driver.findElement(By.xpath(link_checkBoxes)).click();
 
@@ -129,9 +110,6 @@ public class TheInternet {
         assertTrue(checkboxSelected2,"Checkbox 1 is selected as expected");
     }
 
-    //04
-    @Test
-    @Ignore
     public void verifyContextMenu(){
         driver.findElement(By.xpath(link_contextMenu)).click();
 
@@ -144,9 +122,6 @@ public class TheInternet {
         alert.accept();
     }
 
-    //05
-    @Test
-    @Ignore
     public void dragAndDrop(){
         driver.findElement(By.xpath(link_dragDrop)).click();
         
@@ -157,9 +132,6 @@ public class TheInternet {
         action.dragAndDrop(drag, drop).perform();
     }
 
-    //06
-    @Test
-    @Ignore
     public void dropDown(){
         driver.findElement(By.xpath(link_dropDown)).click();
 
@@ -171,9 +143,6 @@ public class TheInternet {
         System.out.println(selectedOpt);
     }
 
-    //07
-    @Test
-    @Ignore
     public void verifyDynamicControls(){
         driver.findElement(By.xpath(link_dynamicControls)).click();
 
@@ -182,7 +151,6 @@ public class TheInternet {
 
         driver.findElement(By.xpath("//*[@id=\"checkbox-example\"]/button")).click();
         driver.findElement(By.xpath("//*[@id=\"checkbox-example\"]/button")).click();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(driver -> driver.findElement(By.xpath("//*[@id=\"message\"]")).isDisplayed());
         String text = driver.findElement(By.xpath("//*[@id=\"message\"]")).getText();
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
@@ -197,9 +165,6 @@ public class TheInternet {
         driver.findElement(By.xpath("//input[@type=\"text\"]")).sendKeys("Tejaswi");
     }
 
-    //08
-    @Test
-    @Ignore
     public void verifyEntryAd(){
         driver.findElement(By.xpath(link_entryAd)).click();
 
@@ -209,9 +174,7 @@ public class TheInternet {
         driver.findElement(By.xpath("//*[@id=\"modal\"]/div[2]/div[3]/p")).click();
     }
 
-    //09
-    @Test
-    @Ignore
+
     public void verifyFileDownloader(){
         driver.findElement(By.xpath(link_fileDownload)).click();
         List<WebElement> links = driver.findElements(By.xpath("//div[@class='example']//a"));
@@ -226,20 +189,14 @@ public class TheInternet {
         links.get(0).click();
     }
 
-    //10
-    @Test
-    @Ignore
     public void verifyFileUpload(){
         driver.findElement(By.xpath(link_fileUpload)).click();
-        String userHome = System.getProperty("user.home");
-        String filePath = userHome + "\\Documents\\UI_Automation\\UI_Automation\\src\\test\\resources\\File.txt";
+        String filePath = Path.of("src", "test", "resources", "File.txt").toAbsolutePath().toString();
         driver.findElement(By.xpath("//input[@id=\"file-upload\"]")).sendKeys(filePath);
         driver.findElement(By.xpath("//input[@id=\"file-submit\"]")).click();
     }
 
-    //11
-    @Test
-    @Ignore
+
     public void login(){
         driver.findElement(By.xpath(link_formAuth)).click();
         //verify wrong credentials error message
@@ -257,9 +214,6 @@ public class TheInternet {
         driver.findElement(By.xpath("//div[@class=\"flash success\"]")).isDisplayed();
     }
 
-    //12
-    @Test
-    @Ignore
     public void handleHover(){
         driver.findElement(By.xpath(link_hovers)).click();
         Actions actions = new Actions(driver);
@@ -268,8 +222,7 @@ public class TheInternet {
         driver.findElement(By.xpath("//a[@href=\"/users/1\"]")).click();
     }
 
-    //13
-    @Test
+
     public void inputNumber(){
         driver.findElement(By.xpath(link_inputs)).click();
 
@@ -282,10 +235,5 @@ public class TheInternet {
         } else {
             System.out.println("FAIL: Field accepts non-numeric characters: " + enteredValue);
         }
-    }
-
-    @AfterTest
-    public void tearDown(){
-        driver.quit();
     }
 }
